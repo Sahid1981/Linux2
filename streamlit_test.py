@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from streamlit_autorefresh import st_autorefresh
 
-@st.cache_resource
 def get_sakila_data():
     conn = st.connection('sakila', type='sql')
     query = "SELECT c.name AS genre, COUNT(f.film_id) AS film_count FROM category c JOIN film_category fc ON c.category_id = fc.category_id JOIN film f ON fc.film_id = f.film_id GROUP BY c.name ORDER BY film_count DESC;"
@@ -11,13 +11,16 @@ def get_sakila_data():
 
 def get_weather_data():
     conn = st.connection('weather', type='sql')
-    df = conn.query("SELECT * FROM weather_data ORDER BY timestamp DESC LIMIT 50")
+    df = conn.query("SELECT * FROM weather_data ORDER BY timestamp DESC LIMIT 50",ttl=600)
     return df
 
 def main():
     st.title("Tietokannat")
-
-    tab1, tab2 = st.tabs(["Sakila Genretilastot", "Säädata Oulun Herukassa"])
+    count = st_autorefresh(interval=60000, limit=None, key="data_refresh")
+    st.write(f"Sivu päivittyy 10 minuutin välein.")
+    st.write(f"Sivu on päivittynyt {count} kertaa latauksen jälkeen.")
+    
+    tab1, tab2 = st.tabs(["🎬 Sakila Genretilastot", "🌤 Säädata Oulun Herukassa"])
 
     with tab1:
         st.write("Elokuvien määrä genrettäin")
@@ -29,7 +32,7 @@ def main():
     with tab2:
         st.subheader("Viimeisin säädata")
         weather_df = get_weather_data()
+        st.line_chart(weather_df.set_index('timestamp')['temperature'])
         st.dataframe(weather_df)
-
 if __name__ == "__main__":
     main()
