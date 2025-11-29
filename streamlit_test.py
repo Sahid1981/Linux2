@@ -36,7 +36,7 @@ def main():
 
     st.title("Tietokannat, Sää , Uunimakkaravahti")
 
-    count = st_autorefresh(interval=60000, limit=None, key="data_refresh")
+    count = st_autorefresh(interval=600000, limit=None, key="data_refresh")
 
 
 
