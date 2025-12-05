@@ -17,7 +17,7 @@ DB_CONFIG = {
 
 @app.route('/api/messages', methods=['GET'])
 def get_messages():
-    Limit = request.args.get('limit', 50, type=int)
+    limit = request.args.get('limit', 50, type=int)
 
     try:
         conn = mysql.connector.connect(**DB_CONFIG)

@@ -9,6 +9,7 @@ services:
       - "1883:1883"  #MQTT TCP
       - "9001:9001"  #WebSocket
     volumes:
-      - ./mosquitto/config:/mosquitto/config
-      - ./mosquitto/data:/mosquitto/data
-      - ./mosquitto/log:/mosquitto/log
+      - /home/ubuntu/myapp/mqtt-chat/mosquitto/config:/mosquitto/config
+      - /home/ubuntu/myapp/mqtt-chat/mosquitto/data:/mosquitto/data
+      - /home/ubuntu/myapp/mqtt-chat/mosquitto/log:/mosquitto/log
+
