@@ -19,6 +19,16 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
         button {
             background: #007bff;
             color: white;
@@ -30,6 +40,12 @@
         }
         button:hover {
             background: #0056b3;
+        }
+        .diary-button {
+            background: #28a745;
+        }
+        .diary-button:hover {
+            background: #218838;
         }
         #result {
             margin-top: 20px;
@@ -46,10 +62,17 @@
         <p>Frontend: Nginx | Backend: Python/Flask | Database: MySQL</p>
         <p><strong>Server:</strong> <span id="serverInfo"></span></p>
 
-        <div>
+        <div class="section">
+            <h3>Perusominaisuudet</h3>
             <button onclick="checkHealth()">Check Backend Health</button>
             <button onclick="initDB()">Initialize Database</button>
             <button onclick="getUsers()">Get Users</button>
+        </div>
+
+        <div class="section">
+            <h3>Päiväkirja</h3>
+            <button class="diary-button" onclick="openNewEntry()">Uusi päiväkirja merkintä</button>
+            <button class="diary-button" onclick="viewEntries()">Katso päiväkirja merkintöjä</button>
         </div>
 
         <div id="result"></div>
@@ -88,6 +111,14 @@
             } catch (error) {
                 resultDiv.textContent = 'Error: ' + error.message;
             }
+        }
+
+        function openNewEntry() {
+            window.location.href = 'diary.html';
+        }
+
+        function viewEntries() {
+            window.location.href = 'view-diary.html';
         }
     </script>
 </body>

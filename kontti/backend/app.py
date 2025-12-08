@@ -1,6 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import mysql.connector
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -42,6 +43,15 @@ def init_db():
             )
         """)
         cursor.execute("""
+            CREATE TABLE IF NOT EXISTS diary_entries (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                date DATE NOT NULL,
+                title VARCHAR(255) NOT NULL,
+                content LONGTEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        cursor.execute("""
             INSERT INTO users (name, email) VALUES
             ('John Doe', 'john@example.com'),
             ('Jane Smith', 'jane@example.com')
@@ -50,6 +60,54 @@ def init_db():
         cursor.close()
         conn.close()
         return jsonify({"message": "Database initialized"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/diary/add', methods=['POST'])
+def add_diary_entry():
+    try:
+        data = request.get_json()
+        
+        if not data or not all(k in data for k in ['date', 'title', 'content']):
+            return jsonify({"error": "Missing required fields"}), 400
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            INSERT INTO diary_entries (date, title, content)
+            VALUES (%s, %s, %s)
+        """, (data['date'], data['title'], data['content']))
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        return jsonify({"message": "Diary entry added successfully"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/diary/entries')
+def get_diary_entries():
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT date, title, content FROM diary_entries
+            ORDER BY date DESC, created_at DESC
+        """)
+        entries = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        
+        # Format dates for display
+        for entry in entries:
+            if isinstance(entry['date'], bytes):
+                entry['date'] = entry['date'].decode('utf-8')
+            else:
+                entry['date'] = str(entry['date'])
+        
+        return jsonify(entries)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
