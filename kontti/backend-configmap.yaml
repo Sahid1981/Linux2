@@ -5,4 +5,4 @@ metadata:
 data:
   DB_HOST: "mysql"
   DB_NAME: "appdb"
-  DB_USER: "appuser"
+  DB_USER: "user"
