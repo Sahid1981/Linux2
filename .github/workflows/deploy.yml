@@ -98,7 +98,7 @@ jobs:
             port: 22
             source: lemp-containers/db/init/init.sql
             target: /opt/lemp/db/init/
-            strip_components: 2
+            strip_components: 3
 
         
 
@@ -111,6 +111,7 @@ jobs:
             port: 22
             source: lemp-containers/docker-compose.prod.yml
             target: /tmp/
+            strip_components: 1
 
         - name: Move docker-compose.prod.yml to /opt/lemp/ on VM
           uses: appleboy/ssh-action@v1.0.3
