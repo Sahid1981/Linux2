@@ -15,7 +15,7 @@ def health():
     return{'status': 'ok'}
 
 @app.get('/api')
-#jep
+#jepi
 def index():
 
     """Simple endpoint that greets from DB."""
